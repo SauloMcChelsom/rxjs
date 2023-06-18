@@ -4,10 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "npx nodemon",
-    "start:build": "rimraf ./build && tsc",
-    "start:dist": "webpack && webpack-dev-server --open",
-    "start:bundle": "node -r esm ./dist/main_bundle.js"
+    "start": "webpack && webpack-dev-server --open"
   },
   "author": "",
   "license": "ISC",

@@ -2,12 +2,11 @@ const path = require("path")
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
-   entry: {  
-      app: ['./build/index.js']  
-   },  
+   entry: './src/index.ts', 
+   devtool: 'inline-source-map',  
    output: {  
       path: path.resolve(__dirname, 'dist'),  
-      filename: 'main_bundle.js'  
+      filename: 'main_bundle.js'
    },  
    devServer: {
         static: path.resolve(__dirname, 'dist'),
@@ -17,7 +16,8 @@ const config = {
    mode:'development',  
    module: {
       rules: [
-        // { test: /\.(js|jsx)$/, use: 'babel-loader', },
+         { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
+         { test: /\.(js|jsx)$/, use: 'babel-loader', },
          { test: /\.(jpe?g|png|gif|svg)$/i, use: [ 'img-loader' ] },
          { test: /\.txt$/, use: 'raw-loader' },
          { test: /\.css$/, use: 'css-loader' },
@@ -36,7 +36,10 @@ const config = {
          },
       ],
    },
-   plugins: [new HtmlWebpackPlugin(),/*new HtmlWebpackPlugin({ template: './src/index2.html' }),*/],
+   resolve: {  
+      extensions: [ '.tsx', '.ts', '.js' ]  
+   },  
+   plugins: [new HtmlWebpackPlugin({ template: './src/index.html' }),],
 }
 
 module.exports = config
