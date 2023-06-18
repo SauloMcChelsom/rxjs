@@ -109,7 +109,6 @@ Following is the list of operators that can be used as mathematical operators:
  **2\.**   | max           | The max method is used to take an observable with all values and return an observable with the maximum value from the list\.                                                                                                                                                                              
  **3\.**   | min           | The min method is used to take an observable with all values and return an observable with the minimum value from the list\.                                                                                                                                                                              
  **4\.**   | reduce        | In reduce operator, an accumulator function is used on the input observable\. It returns the accumulated value in an observable form, with an optional seed value passed to the accumulator function\.
-So, the reduce function takes two arguments, one accumulator function, and second the seed value\. 
 
 ### Join Operators
 Following is the list of operators that can be used as join operators:
@@ -445,7 +444,7 @@ observable.subscribe({
 });  
 console.log("After sync subscribe");  
 ```
-![Alt text](assets\rxjs-working-with-scheduler.png?raw=true "scheduler")
+<p align="center"><img src="assets\rxjs-working-with-scheduler.png"/></p>
 
 Veja o exemplo assíncrono ( Usando o Agendador )
 ```
@@ -466,5 +465,4 @@ observable.pipe(observeOn(asyncScheduler)).subscribe({
 });  
 console.log("After async subscribe");  
 ```
-
-![Alt text](assets\rxjs-working-with-scheduler2.png?raw=true "scheduler")
+<p align="center"><img src="assets\rxjs-working-with-scheduler2.png"/></p>
