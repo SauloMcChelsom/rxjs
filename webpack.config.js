@@ -1,12 +1,13 @@
+var Webpack = require("webpack");
 const path = require("path")
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
-   entry: './src/index.ts', 
    devtool: 'inline-source-map',  
    output: {  
       path: path.resolve(__dirname, 'dist'),  
-      filename: 'main_bundle.js'
+      filename: '[name].[chunkhash].bundle.js',
+      chunkFilename: "[name]-[id].bundle.js"
    },  
    devServer: {
         static: path.resolve(__dirname, 'dist'),
@@ -39,7 +40,22 @@ const config = {
    resolve: {  
       extensions: [ '.tsx', '.ts', '.js' ]  
    },  
-   plugins: [new HtmlWebpackPlugin({ template: './src/index.html' }),],
+   entry: {
+      index:'./src/index.ts',
+      home:'./src/home/home.ts'
+   },
+   plugins: [
+      new Webpack.HotModuleReplacementPlugin(),
+      new HtmlWebpackPlugin({ 
+         template: './src/index.html',
+         chunks: ["index"]
+      }),
+      new HtmlWebpackPlugin({
+         filename: 'home.html',
+         template: 'src/home/home.html',
+         chunks: ["home"],
+      })
+   ],
 }
 
 module.exports = config
