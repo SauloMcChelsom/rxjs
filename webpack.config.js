@@ -42,7 +42,7 @@ const config = {
    },  
    entry: {
       index:'./src/index.ts',
-      home:'./src/home/home.ts'
+      introduction:'./src/introduction/introduction.ts'
    },
    plugins: [
       new Webpack.HotModuleReplacementPlugin(),
@@ -51,9 +51,9 @@ const config = {
          chunks: ["index"]
       }),
       new HtmlWebpackPlugin({
-         filename: 'home.html',
-         template: 'src/home/home.html',
-         chunks: ["home"],
+         filename: 'introduction.html',
+         template: 'src/introduction/introduction.html',
+         chunks: ["introduction"],
       })
    ],
 }
