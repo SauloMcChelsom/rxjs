@@ -1,6 +1,7 @@
-import { Observable, forkJoin, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, forkJoin, from, of, throwError } from 'rxjs';
 import { Observer } from 'rxjs';
 import { interval } from 'rxjs';  
+import { Subject } from 'rxjs';
 import { catchError, delay, filter, finalize, skipWhile, take, tap } from 'rxjs/operators';  
 import { 
     map, 
@@ -15,6 +16,13 @@ import {
         this.i = this.i + 1;
         return this.i == 2  ? throwError(() => new Error('data error')) : of('data returned')
     }
+    
+
+    public subject = new Subject<number>();
+
+    public behavior = new BehaviorSubject(0);
+
+    public observablefrom = from([1, 2, 3]);
 
     public notification:Observable<any> = new Observable((observer => {
         this.dataService().pipe(
@@ -46,8 +54,22 @@ import {
             error: (e) => console.error(e),
             complete: () => this.logItem('complete, done, finalize') 
         })
+
+        this.ficarOuvidoSubject()
+        this.ficarOuvidoBehavior()
     }
 
+    ficarOuvidoSubject(){
+        this.subject.subscribe({
+            next: (v) => console.log(`observerA: ${v}`),
+        });
+    }
+
+    ficarOuvidoBehavior(){
+        this.behavior.subscribe({
+            next: (v) => console.log(`observerA: ${v}`),
+        });
+    }
     countNumber(){
         let p:HTMLElement=document.getElementById("p1")
         p.innerHTML="hello"
@@ -130,6 +152,14 @@ import {
         this.notification.subscribe(x => {
             console.log(x);
         });
+    }
+
+    set_subject(){
+        this.subject.next(2);
+    }
+
+    set_behavior(){
+        this.behavior.next(27);
     }
 }
 (<any>window).Introduction = new Introduction()

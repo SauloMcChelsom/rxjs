@@ -42,11 +42,13 @@ const config = {
    },  
    entry: {
       index:'./src/index.ts',
-      introduction:'./src/introduction/introduction.ts'
+      introduction:'./src/introduction/introduction.ts',
+      login_service:'./src/login_service/login_service.ts'
    },
    plugins: [
       new Webpack.HotModuleReplacementPlugin(),
       new HtmlWebpackPlugin({ 
+         filename: 'index.html',
          template: './src/index.html',
          chunks: ["index"]
       }),
@@ -54,6 +56,11 @@ const config = {
          filename: 'introduction.html',
          template: 'src/introduction/introduction.html',
          chunks: ["introduction"],
+      }),
+      new HtmlWebpackPlugin({
+         filename: 'login_service.html',
+         template: 'src/login_service/login_service.html',
+         chunks: ["login_service"],
       })
    ],
 }
