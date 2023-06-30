@@ -15,6 +15,83 @@ O site oficial do RxJS o definiu como uma biblioteca para compor programas assí
 
 RxJS é uma biblioteca JavaScript que introduziu o conceito de "programação reativa" na web. Em termos gerais, você pode dizer que o RxJS é uma linguagem de programação reativa. Ele fornece uma maneira de escrever linhas de montagem em seus aplicativos de software. Facilita a gravação de software que pode ser reutilizável, configurável e assíncrono.
 
+### Qual é a diferença entre Observable e Subject em rxjs?
+
+**Subject** : você pode enviar para ele e receber dele.
+
+**Observable** : você pode receber apenas dele .
+
+Em outras palavras, no Subject , você pode assiná -lo e usá-lo para transmitir para outros assinantes a qualquer hora e em qualquer lugar no código.
+
+enquanto, no Observable , você pode assiná -lo apenas (você não pode usá-lo para transmitir dados após a inicialização). O único lugar onde você pode transmitir dados do observable é dentro de seu construtor.
+
+Observables são unicast por design e Subjects são multicast por design.
+
+Se você observar o exemplo abaixo, cada assinatura recebe os diferentes valores como observáveis ​​desenvolvidos como unicast por design.
+
+```
+import {Observable} from 'rxjs';
+
+let obs = Observable.create(observer=>{
+   observer.next(Math.random());
+})
+
+obs.subscribe(res=>{
+  console.log('subscription a :', res); //subscription a :0.2859800202682865
+});
+
+obs.subscribe(res=>{
+  console.log('subscription b :', res); //subscription b :0.694302021731573
+});
+```
+
+Isso pode ser estranho se você espera os mesmos valores em ambas as assinaturas.
+
+Podemos superar esse problema usando Subject. Subject é semelhante ao emissor de eventos e não é invocado para cada assinatura. Considere o exemplo abaixo.
+
+```
+import {Subject} from 'rxjs';
+
+let obs = new Subject();
+
+obs.subscribe(res=>{
+  console.log('subscription a :', res); // subscription a : 0.91767565496093
+});
+
+obs.subscribe(res=>{
+  console.log('subscription b :', res);// subscription b : 0.91767565496093
+});
+
+obs.next(Math.random());
+```
+Ambas as assinaturas obtiveram o mesmo valor de saída!
+
+**Observable**
+
+- Eles são frios: o código é executado quando eles têm pelo menos um único observador.
+
+- Cria cópia dos dados: Observable cria cópia dos dados para cada observador.
+
+- Unidirecional: Observer não pode atribuir valor a observável (origem/mestre).
+
+- O código será executado para cada observador. Se for uma chamada HTTP, ela será chamada para cada observador.
+
+- se for um serviço que queremos compartilhar entre todos os componentes, não terá o resultado mais recente, todos os novos assinantes ainda assinarão o mesmo observável e obterão valor do zero
+
+- Os meios unicast podem emitir valores do observável e não de qualquer outro componente.
+
+**Subject**
+
+- Eles são quentes: o código é executado e o valor é transmitido mesmo se não houver nenhum observador.
+
+- Compartilha dados: os mesmos dados são compartilhados entre todos os observadores.
+
+bidirecional: Observador pode atribuir valor a observável (origem/mestre).
+
+- Se estiver usando o assunto, você perderá todos os valores que são transmitidos antes da criação do observador. Então aqui vem Replay Assunto
+
+- multicast, pode transmitir valores para vários assinantes e pode atuar como assinante e emissor
+
 ### Recursos do RxJS
 A seguir, é apresentada a lista de conceitos essenciais ou recursos primários do RxJS que são usados para resolver o gerenciamento de eventos assíncronos:
 

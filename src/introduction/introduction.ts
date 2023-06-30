@@ -27,12 +27,12 @@ import {
     public notification:Observable<any> = new Observable((observer => {
         this.dataService().pipe(
             delay(200),
-            tap(()=>observer.next()),
-            catchError(()=>{
-                observer.error('on error');
-                return of(null)
+            tap((r)=>observer.next(r)),
+            catchError((e)=>{
+                observer.error(e);
+                return of({error:e})
             })
-        )
+        ).subscribe()
     }))
 
     public observable:Observable<string> = new Observable((observer => {

@@ -1,12 +1,124 @@
-import { BehaviorSubject, Observable, forkJoin, from, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, forkJoin, from, of, throwError } from 'rxjs';
 import { Observer } from 'rxjs';
 import { interval } from 'rxjs';  
 import { Subject } from 'rxjs';
-import { catchError, delay, filter, finalize, skipWhile, take, tap } from 'rxjs/operators';  
+import { catchError, delay, filter, finalize, find, skipWhile, take, tap, toArray } from 'rxjs/operators';  
 import { map, first } from 'rxjs/operators';
 
-class LoginService {
-    constructor(){}
+interface UserProfile { 
+    id?: number;
+    username: string; 
+    password: string; 
+} 
+
+formLogin.onsubmit = (event) => {
+    event.preventDefault()
+
+    const data = new FormData(formLogin)
+
+    const username = data.get('username').toString()
+    const password = data.get('password').toString()
+
+    new LoginComponent(new LoginService()).login({username: username, password: password})
+    new Load(true)
+    new Message('')
 }
-(<any>window).LoginService = new LoginService()
+
+class Message {
+    constructor(user:any){
+        this.text(user)
+    }
+
+    private text(text:any){
+        let p:HTMLElement=document.getElementById("message")
+        p.innerHTML = text.toString()
+    }
+}
+
+class Load {
+    constructor(status:boolean){
+        this.load(status)
+    }
+
+    private load(status:boolean){
+        if(status){
+            this.show()
+        }else{
+            this.hide()
+        }
+    }
+
+    private show(){
+     let p:HTMLElement=document.getElementById("load")
+         p.innerHTML = "Loading..."
+    }
+
+    private hide(){
+        let p:HTMLElement=document.getElementById("load")
+        p.innerHTML = ""
+    }
+}
+
+class LoginService {
+
+    private in_memory$:Observable<UserProfile> = from([
+        {
+            id: 1,
+            username: 'Jack',
+            password: '123'
+        },
+        {
+            id: 2,
+            username: 'Joy',
+            password: '321'
+        },
+        {
+            id: 3,
+            username: 'Mary',
+            password: '010203'
+        }
+    ])
+
+    constructor() {}
+
+    private httpClient(user: UserProfile):Observable<UserProfile>{
+        let response: Observable<any> = new Observable((observer => {
+           this.in_memory$.pipe(
+                delay(3100),
+                find(v=> v.username == user.username && v.password == user.password),
+                tap((r)=>observer.next(r || [])),
+                tap(()=>new Load(false)),
+                tap((r)=>r ? new Message(`id: ${r.id} | nome: ${r.username}`) : new Message('User Not Find')),
+                catchError(()=>{
+                    observer.error('on error');
+                    return of(null)
+                })
+            ).subscribe()
+        }))
+        return response;
+    }
+
+    public login(user: UserProfile): Observable<UserProfile> {
+       return this.httpClient(user).pipe(map(r=>r))
+    }
+}
+
+class LoginComponent {
+    
+    private subscriptions: Subscription
+
+    constructor(private loginService: LoginService) {} 
+
+    login(user:UserProfile){
+        this.loginService.login(user).subscribe(res => {
+            console.log('result: ', res)
+        }) 
+    }
+
+    ngOnDestroy(): void { 
+        this.subscriptions.unsubscribe() 
+    } 
+
+} 
+(<any>window).LoginComponent = new LoginComponent(new LoginService());
 
