@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable, Subscription, forkJoin, from, of, throwErr
 import { Observer } from 'rxjs';
 import { interval } from 'rxjs';  
 import { Subject } from 'rxjs';
-import { catchError, delay, filter, finalize, find, skipWhile, take, tap, toArray } from 'rxjs/operators';  
+import { catchError, delay, filter, finalize, find, skipWhile, take, takeUntil, tap, toArray } from 'rxjs/operators';  
 import { map, first } from 'rxjs/operators';
 
 interface UserProfile { 
@@ -19,7 +19,7 @@ formLogin.onsubmit = (event) => {
     const username = data.get('username').toString()
     const password = data.get('password').toString()
 
-    new LoginComponent(new LoginService()).login({username: username, password: password})
+    new LoginService().login({username: username, password: password})
     new Load(true)
     new Message('')
 }
@@ -98,27 +98,21 @@ class LoginService {
         return response;
     }
 
-    public login(user: UserProfile): Observable<UserProfile> {
-       return this.httpClient(user).pipe(map(r=>r))
-    }
-}
-
-class LoginComponent {
-    
-    private subscriptions: Subscription
-
-    constructor(private loginService: LoginService) {} 
+    private unsubscribe = new Subject<void>;
 
     login(user:UserProfile){
-        this.loginService.login(user).subscribe(res => {
+        this.httpClient(user).pipe(takeUntil(this.unsubscribe)).subscribe(res => {
             console.log('result: ', res)
         }) 
     }
 
     ngOnDestroy(): void { 
-        this.subscriptions.unsubscribe() 
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
     } 
 
 } 
-(<any>window).LoginComponent = new LoginComponent(new LoginService());
+
+
+(<any>window).LoginService = new LoginService();
 

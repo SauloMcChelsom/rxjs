@@ -43,7 +43,8 @@ const config = {
    entry: {
       index:'./src/index.ts',
       introduction:'./src/introduction/introduction.ts',
-      login_service:'./src/login_service/login_service.ts'
+      login_service:'./src/login_service/login_service.ts',
+      operators:'./src/operators/operators.ts'
    },
    plugins: [
       new Webpack.HotModuleReplacementPlugin(),
@@ -61,6 +62,11 @@ const config = {
          filename: 'login_service.html',
          template: 'src/login_service/login_service.html',
          chunks: ["login_service"],
+      }),
+      new HtmlWebpackPlugin({
+         filename: 'operators.html',
+         template: 'src/operators/operators.html',
+         chunks: ["operators"],
       })
    ],
 }
